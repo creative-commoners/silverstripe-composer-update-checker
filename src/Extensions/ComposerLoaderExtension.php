@@ -136,11 +136,18 @@ class ComposerLoaderExtension extends Extension
 //            putenv('HTTP_PROXY_REQUEST_FULLURI=false');
 //            putenv('HTTPS_PROXY_REQUEST_FULLURI=false');
 
-            $_SERVER['CGI_HTTP_PROXY'] = sprintf(
+            $proxy = sprintf(
                 'tcp://%s:%d',
                 Environment::getEnv('SS_OUTBOUND_PROXY'),
                 Environment::getEnv('SS_OUTBOUND_PROXY_PORT')
             );
+
+            // Provide access for StreamContextFactory, since it creates its own streams
+            $_SERVER['CGI_HTTP_PROXY'] = $proxy;
+
+            // Provide environment variables for cURL based requests to automatically configure themselves
+            putenv('HTTP_PROXY=' . $proxy);
+            putenv('HTTPS_PROXY=' . $proxy);
         }
     }
 }
