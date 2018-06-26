@@ -118,6 +118,12 @@ class ComposerLoaderExtension extends Extension
             putenv('COMPOSER_HOME=/tmp');
         }
 
+        // Inject SilverStripe proxy settings
+        if (Environment::getEnv('SS_OUTBOUND_PROXY') && Environment::getEnv('SS_OUTBOUND_PROXY_PORT')) {
+            $proxy = Environment::getEnv('SS_OUTBOUND_PROXY') . ':' . Environment::getEnv('SS_OUTBOUND_PROXY_PORT');
+            putenv('HTTPS_PROXY=' . $proxy);
+        }
+
         /** @var Composer $composer */
         $composer = Factory::create(new NullIO());
         $this->setComposer($composer);
