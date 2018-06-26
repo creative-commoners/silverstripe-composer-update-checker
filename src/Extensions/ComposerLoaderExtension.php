@@ -133,8 +133,8 @@ class ComposerLoaderExtension extends Extension
 
         // Inject SilverStripe proxy settings if defined
         if (Environment::getEnv('SS_OUTBOUND_PROXY') && Environment::getEnv('SS_OUTBOUND_PROXY_PORT')) {
-            putenv('HTTP_PROXY_REQUEST_FULLURI=false');
-            putenv('HTTPS_PROXY_REQUEST_FULLURI=false');
+//            putenv('HTTP_PROXY_REQUEST_FULLURI=false');
+//            putenv('HTTPS_PROXY_REQUEST_FULLURI=false');
 
             $_SERVER['CGI_HTTP_PROXY'] = sprintf(
                 'tcp://%s:%d',
