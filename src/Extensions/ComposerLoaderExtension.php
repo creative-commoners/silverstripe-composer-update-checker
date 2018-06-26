@@ -113,6 +113,19 @@ class ComposerLoaderExtension extends Extension
         $originalDir = getcwd();
         chdir(BASE_PATH);
 
+        $this->configureEnvironment();
+
+        /** @var Composer $composer */
+        $composer = Factory::create(new NullIO());
+        $this->setComposer($composer);
+        chdir($originalDir);
+    }
+
+    /**
+     * Configures required environment settings for Composer's use
+     */
+    protected function configureEnvironment()
+    {
         // Mock COMPOSER_HOME if it's not defined already. Composer requires one of the two to be set.
         if (!Environment::getEnv('HOME') && !Environment::getEnv('COMPOSER_HOME')) {
             putenv('COMPOSER_HOME=/tmp');
@@ -120,16 +133,13 @@ class ComposerLoaderExtension extends Extension
 
         // Inject SilverStripe proxy settings if defined
         if (Environment::getEnv('SS_OUTBOUND_PROXY') && Environment::getEnv('SS_OUTBOUND_PROXY_PORT')) {
+            putenv('HTTPS_PROXY_REQUEST_FULLURI=false');
+
             $_SERVER['HTTPS_PROXY'] = sprintf(
                 '%s:%d',
                 Environment::getEnv('SS_OUTBOUND_PROXY'),
                 Environment::getEnv('SS_OUTBOUND_PROXY_PORT')
             );
         }
-
-        /** @var Composer $composer */
-        $composer = Factory::create(new NullIO());
-        $this->setComposer($composer);
-        chdir($originalDir);
     }
 }
